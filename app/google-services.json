@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "487249785396",
+    "project_id": "beam-3af72",
+    "storage_bucket": "beam-3af72.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:487249785396:android:f135d3e308c683f2091061",
+        "android_client_info": {
+          "package_name": "com.fantta.beam"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOZ8FFvyKDb9W4bXWjYNl2Y2s854LOq5I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
