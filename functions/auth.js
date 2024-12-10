@@ -4,7 +4,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 import { router } from "expo-router";
 
 export async function signUp(app, email, password, name) {
@@ -31,9 +31,7 @@ export async function signIn(app, email, password) {
   const auth = getAuth(app);
 
   try {
-    const user = await signInWithEmailAndPassword(auth, email, password);
-
-    console.log(user);
+    await signInWithEmailAndPassword(auth, email, password);
 
     router.replace("/home/");
   } catch (err) {
@@ -68,4 +66,17 @@ export async function logout(app) {
   } catch (err) {
     console.log(err.code);
   }
+}
+
+export async function getUserByUid(app, uid) {
+  const db = getFirestore(app);
+
+  const docRef = doc(db, "users", uid);
+  const userValue = await getDoc(docRef);
+
+  if (userValue.exists()) {
+    return userValue.data().name;
+  }
+
+  return "Usuário não encontrado";
 }

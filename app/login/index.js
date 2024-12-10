@@ -16,8 +16,7 @@ export default function App() {
         router.replace("/home/");
       }
     });
-
-    // Desinscrever o listener quando o componente for desmontado
+    
     return unsubscribe;
   }, []);
 
@@ -58,11 +57,11 @@ export default function App() {
           setError(analyzeError(error));
         }}
       >
-        <Text className="text-center text-white">Criar conta</Text>
+        <Text className="text-center text-white">Entrar</Text>
       </TouchableOpacity>
       <Link className="mt-4" href="/">
         <Text className="text-blue-400 text-center">
-          Já possui uma conta? Logar.
+          Não possui uma conta? Criar.
         </Text>
       </Link>
       <Text className="font-semibold text-red-500 text-center mt-4">
