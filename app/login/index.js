@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { Link } from "expo-router";
 import app from "../firebase";
@@ -9,25 +9,28 @@ import "../../global.css";
 
 export default function App() {
   useEffect(() => {
+    // Configuração para analisar se existe um usuário logado
     const auth = getAuth(app);
 
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
+        // Redireciona para a página inicial se o usuário estiver logado
         router.replace("/home/");
       }
     });
-    
+
+    // Retorna a função de unsubscribe para limpar a escuta quando o componente for desmontado
     return unsubscribe;
   }, []);
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState(""); // Armazena o email do usuário
+  const [password, setPassword] = useState(""); // Armazena a senha do usuário
+  const [showPassword, setShowPassword] = useState(false); // Controla se a senha deve ser mostrada
+  const [error, setError] = useState(""); // Armazena possíveis erros de autenticação
 
   return (
     <View className="flex w-full h-full justify-center items-center p-16 bg-white">
+      {/* Formulário de Login */}
       <Text className="font-black text-5xl">Beam</Text>
       <Text className="font-semibold text-xl">Entrar</Text>
       <TextInput

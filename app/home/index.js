@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react"; // Funcionalidades básicas do React
 import {
   View,
   Text,
@@ -6,8 +6,8 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
-import app from ".././firebase";
-import { onAuthStateChanged, getAuth } from "firebase/auth";
+import app from "../firebase"; // Configuração do Firebase
+import { onAuthStateChanged, getAuth } from "firebase/auth"; // Funcionalidades de autenticação do Firebase
 import {
   getFirestore,
   collection,
@@ -15,73 +15,73 @@ import {
   query,
   orderBy,
   where,
-} from "firebase/firestore";
-import { getUserByUid, logout } from "../../functions/auth";
-import { sendMessage, handleMessage } from "../../functions/message";
-import { router } from "expo-router";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import "../../global.css";
+} from "firebase/firestore"; // Funcionalidades do Firestore
+import { getUserByUid, logout } from "../../functions/auth"; // Funções de autenticação
+import { sendMessage, handleMessage } from "../../functions/message"; // Funções de mensagens
+import { router } from "expo-router"; // Router para rediresionar para outras páginas
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"; // ícone
+import Ionicons from "@expo/vector-icons/Ionicons"; // ícone
 
 export default function App() {
+  const [user, setUser] = useState(""); // Estado do usuário atual
+
   useEffect(() => {
+    // Configuração inicial do Firebase
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    onAuthStateChanged(auth, async (currentUser) => {
+    // Análise da existência de um usuário
+    const unsubscribeAuth = onAuthStateChanged(auth, async (currentUser) => {
       if (!currentUser) {
         router.replace("/");
       } else {
-        setUserUID(currentUser.uid);
-        setUser(await getUserByUid(app, currentUser.uid));
+        setUserUID(currentUser.uid); // Define o ID do usuário atual
+        setUser(await getUserByUid(app, currentUser.uid)); // Define as informações do usuário atual
       }
     });
 
-    const unsubscribe = onSnapshot(
+    // Analisa a chegada de novas mensagens
+    const unsubscribeMessages = onSnapshot(
       query(collection(db, "messages"), orderBy("sendAt", "asc")),
       (snapshot) => {
-        let allMessages = [];
-
-        snapshot.docs.map((doc) => {
-          allMessages.push(doc.data());
-        });
-
-        setAllMessages(allMessages);
+        // Atualiza o estado com as novas mensagens
+        setAllMessages(snapshot.docs.map((doc) => doc.data()));
       }
     );
 
-    const unsubscribeUser = onSnapshot(
+    // Analisa se existe usuários digitando
+    const unsubscribeUsersTyping = onSnapshot(
       query(collection(db, "users"), where("isTyping", "==", true)),
       (snapshot) => {
-        let usersTyping = [];
-
-        snapshot.docs.map((doc) => {
-          if (doc.data().name !== user) {
-            usersTyping.push(doc.data());
-          }
-        });
-
-        setUsersTyping(usersTyping);
+        // Atualiza o estado com usuários que estão digitando
+        setUsersTyping(
+          snapshot.docs
+            .filter((doc) => doc.data().name !== user)
+            .map((doc) => doc.data())
+        );
       }
     );
 
     return () => {
-      unsubscribe();
-      unsubscribeUser();
+      // Limpa os listeners quando o componente é desmontado
+      if (unsubscribeAuth) unsubscribeAuth();
+      if (unsubscribeMessages) unsubscribeMessages();
+      if (unsubscribeUsersTyping) unsubscribeUsersTyping();
     };
-  }, [user]);
+  }, [user, router]); // Dependências do useEffect
 
-  const [user, setUser] = useState("");
-  const [userUID, setUserUID] = useState("");
-  const [message, setMessage] = useState("");
-  const [allMessages, setAllMessages] = useState([]);
-  const [usersTyping, setUsersTyping] = useState([]);
+  const [userUID, setUserUID] = useState(""); // ID do usuário atual
+  const [message, setMessage] = useState(""); // Mensagem atual
+  const [allMessages, setAllMessages] = useState([]); // Todas as mensagens
+  const [usersTyping, setUsersTyping] = useState([]); // Usuários que estão digitando
 
-  const messageRef = useRef(null);
-  let flatListRef = useRef(null);
+  const messageRef = useRef(null); // Referência ao input de mensagem
+  let flatListRef = useRef(null); // Referência a lista de mensagens
 
   return (
+    // Código da página
     <View className="w-full h-full bg-white">
+      {/* Header da Página */}
       <View className="w-full h-32 border border-b-2 border-0 border-gray py-4">
         <View className="flex flex-col justify-center items-center">
           <Text className="font-black text-xl">Beam - Home</Text>
@@ -114,6 +114,7 @@ export default function App() {
           </Text>
         )}
       </View>
+      {/* Mensagens */}
       <View className="w-full flex-1">
         {allMessages.length > 0 ? (
           <FlatList
@@ -141,6 +142,7 @@ export default function App() {
           </Text>
         )}
       </View>
+      {/* Input de mensagem */}
       <View className="w-full flex justify-end items-end absolute inset-x-0 bottom-0 h-[10%]">
         <View className="flex flex-row justify-around items-center w-full text-center border border-black caret-gray-300">
           <TextInput
