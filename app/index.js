@@ -16,8 +16,7 @@ export default function App() {
         router.replace("/home/");
       }
     });
-
-    // Desinscrever o listener quando o componente for desmontado
+    
     return unsubscribe;
   }, []);
 
@@ -35,6 +34,7 @@ export default function App() {
         placeholder="Nome de usuário"
         className="w-full text-center border border-black mt-8 rounded-xl caret-gray-300"
         value={username}
+        maxLength={10}
         onChangeText={(value) => setUsername(value)}
       />
       <TextInput

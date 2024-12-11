@@ -17,6 +17,7 @@ export async function signUp(app, email, password, name) {
     await setDoc(doc(db, "users", user.user.uid), {
       name: name,
       email: user.user.email,
+      isTyping: false
     });
 
     router.replace("/home/");
